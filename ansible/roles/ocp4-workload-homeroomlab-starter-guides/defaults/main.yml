@@ -10,7 +10,7 @@ tmp_git_location: "{{ tmp_dir }}/git"
 project_name: labs
 project_display: "OpenShift Workshop Labs"
 lab_repo: https://github.com/openshift-labs/starter-guides
-lab_branch: ocp-4.6
+lab_branch: ocp-4.8
 
 homeroom_template_path: "https://raw.githubusercontent.com/openshift-homeroom/workshop-homeroom/2.1.0/templates/production.json"
 
@@ -18,3 +18,6 @@ openshift_cli: oc
 user_count_start: 1
 num_users: 20
 user_format: user%d
+
+# Controls for reporting per-user user info
+ocp4_workload_homeroomlab_starter_guides_per_user_info_enable: true
