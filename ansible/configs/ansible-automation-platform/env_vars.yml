@@ -39,6 +39,7 @@ install_common: true
 install_ipa_client: false
 # Create student user, most likely "lab-user" with SSH password login
 install_student_user: true
+bastion_student_user_ansible: true  # student user can use Ansible
 #software_to_deploy: tower  # replaced by role deploy_automationcontroller in software
 
 ## Set Tower manifest and installer tarball location and creds if not specified in agnosticv vars file
@@ -56,8 +57,6 @@ install_student_user: true
 ### If you want a Key Pair name created and injected into the hosts,
 # set `set_env_authorized_key` to true and set the keyname in `env_authorized_key`
 # you can use the key used to create the environment or use your own self generated key
-# if you set "use_own_key" to false your PRIVATE key will be copied to the bastion. (This is {{key_name}})
-use_own_key: true
 env_authorized_key: "{{guid}}key"
 ansible_ssh_private_key_file: ~/.ssh/{{key_name}}.pem
 set_env_authorized_key: true
@@ -103,6 +102,12 @@ worker_instance_image: "RHEL84GOLD"
 support_instance_count: 0
 support_instance_type: "t2.large"
 support_instance_image: "RHEL84GOLD"
+
+# Set to 1 to deploy Private Automation Hub
+pah_instance_count: 0
+pah_instance_type: "t2.large"
+pah_instance_image: "RHEL84GOLD"
+
 isosupport_instance_count: 0
 
 subnets:
@@ -355,6 +360,24 @@ instances:
   tags:
   - key: "AnsibleGroup"
     value: "managed-nodes"
+  - key: "ostype"
+    value: "rhel"
+  key_name: "{{key_name}}"
+  subnet: PublicSubnet
+
+- name: "pah"
+  count: "{{pah_instance_count}}"
+  public_dns: true
+  unique: true
+  security_groups:
+  - TowerSG
+  - HostSG
+  image: "{{ pah_instance_image }}"
+  flavor:
+    "ec2": "{{pah_instance_type}}"
+  tags:
+  - key: "AnsibleGroup"
+    value: "pah"
   - key: "ostype"
     value: "rhel"
   key_name: "{{key_name}}"
